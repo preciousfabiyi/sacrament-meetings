@@ -1,37 +1,22 @@
-
 import { notFound } from "next/navigation";
 import MeetingDetail from "@/components/MeetingDetail";
-import type { SacramentMeeting } from "@/lib/types";
+import { getMeetingById } from "@/lib/meetings-db";
 
 type PageProps = {
   params: Promise<{ id: string }>;
 };
 
-async function getMeeting(
-  id: string
-): Promise<SacramentMeeting | null> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/meetings/${id}`,
-    { cache: "no-store" }
-  );
-
-  if (response.status === 404 || response.status === 400) {
-    return null;
-  }
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch meeting");
-  }
-
-  return response.json();
-}
-
 export default async function MeetingPage({
   params,
 }: PageProps) {
   const { id } = await params;
+  const meetingId = Number(id);
 
-  const meeting = await getMeeting(id);
+  if (!Number.isInteger(meetingId) || meetingId <= 0) {
+    notFound();
+  }
+
+  const meeting = getMeetingById(meetingId);
 
   if (!meeting) {
     notFound();
