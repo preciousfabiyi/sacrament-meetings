@@ -7,7 +7,7 @@ const PAGE_SIZE = 5;
 function mapMeeting(row: any): SacramentMeeting {
   return {
     id: row.id,
-    date: String(row.date).slice(0, 10),
+    date: row.date_text,
     meetingType: row.meeting_type,
     presiding: row.presiding,
     conducting: row.conducting,
@@ -28,7 +28,7 @@ export async function getMeetings(query = "", page = 1): Promise<SacramentMeetin
 
   const rows = query.trim()
     ? await sql`
-        SELECT * FROM meetings
+        SELECT *, date::text AS date_text FROM meetings
         WHERE presiding ILIKE ${"%" + query + "%"}
         OR conducting ILIKE ${"%" + query + "%"}
         OR meeting_type ILIKE ${"%" + query + "%"}
@@ -37,7 +37,7 @@ export async function getMeetings(query = "", page = 1): Promise<SacramentMeetin
         LIMIT ${PAGE_SIZE} OFFSET ${offset}
       `
     : await sql`
-        SELECT * FROM meetings
+        SELECT *, date::text AS date_text FROM meetings
         ORDER BY date DESC
         LIMIT ${PAGE_SIZE} OFFSET ${offset}
       `;
@@ -60,12 +60,12 @@ export async function getMeetingsTotalPages(query = ""): Promise<number> {
 }
 
 export async function getMeetingsByDate(date: string): Promise<SacramentMeeting[]> {
-  const rows = await sql`SELECT * FROM meetings WHERE date = ${date} ORDER BY date`;
+  const rows = await sql`SELECT *, date::text AS date_text FROM meetings WHERE date = ${date} ORDER BY date`;
   return rows.map(mapMeeting);
 }
 
 export async function getMeetingById(id: number): Promise<SacramentMeeting | null> {
-  const rows = await sql`SELECT * FROM meetings WHERE id = ${id}`;
+  const rows = await sql`SELECT *, date::text AS date_text FROM meetings WHERE id = ${id}`;
   return rows.length ? mapMeeting(rows[0]) : null;
 }
 
