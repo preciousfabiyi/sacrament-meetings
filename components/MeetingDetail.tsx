@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import DeleteMeetingButton from "@/components/DeleteMeetingButton";
 import type { SacramentMeeting } from "@/lib/types";
 
 export default function MeetingDetail({
@@ -126,7 +128,7 @@ export default function MeetingDetail({
         <p>{meeting.closingPrayer}</p>
       </section>
 
-      <div className="mt-8 border-t pt-5 print:hidden">
+      <div className="mt-8 flex flex-wrap gap-3 border-t pt-5 print:hidden">
         <button
           type="button"
           onClick={() => window.print()}
@@ -134,6 +136,15 @@ export default function MeetingDetail({
         >
           Print Meeting Program
         </button>
+
+        <Link
+          href={`/meetings/${meeting.id}/edit`}
+          className="rounded-lg bg-gray-700 px-6 py-3 font-semibold text-white hover:bg-gray-800"
+        >
+          Edit Meeting
+        </Link>
+
+        <DeleteMeetingButton meetingId={meeting.id} />
       </div>
     </article>
   );

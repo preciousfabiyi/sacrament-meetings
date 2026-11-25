@@ -1,3 +1,4 @@
+import Link from "next/link";
 import MeetingCard from "@/components/MeetingCard";
 import MeetingSearch from "@/components/MeetingSearch";
 import Pagination from "@/components/Pagination";
@@ -19,7 +20,15 @@ export default async function MeetingsPage({ searchParams }: PageProps) {
 
   return (
     <section className="space-y-6">
-      <h1 className="text-3xl font-bold">Sacrament Meetings</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-3xl font-bold">Sacrament Meetings</h1>
+        <Link
+          href="/meetings/new"
+          className="rounded-lg bg-blue-900 px-5 py-3 font-semibold text-white hover:bg-blue-800"
+        >
+          Create Meeting
+        </Link>
+      </div>
       <MeetingSearch />
       {meetings.length === 0 ? (
         <p>No meetings found. Try another search.</p>
